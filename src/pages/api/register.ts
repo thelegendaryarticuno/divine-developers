@@ -1,21 +1,29 @@
 import { MongoClient } from 'mongodb';
 import { NextApiRequest, NextApiResponse } from 'next';
 
-// MongoDB connection URI
-const uri = "mongodb+srv://namanmani457:naman43%23@divinedevelopers.nqxo4.mongodb.net/DivineDevelopers?retryWrites=true&w=majority&appName=DivineDevelopers";
+// Global variable to cache the MongoClient
+let cachedClient: MongoClient | null = null;
+let cachedDb: any = null;
 
-// Function to connect to MongoDB
+// MongoDB connection URI
+const uri = process.env.MONGO_URI || "mongodb+srv://namanmani457:naman43%23@divinedevelopers.nqxo4.mongodb.net/DivineDevelopers?retryWrites=true&w=majority&appName=DivineDevelopers";
+
+// Function to connect to MongoDB with caching
 async function connectToDatabase() {
-  const client = new MongoClient(uri);
-  try {
-    await client.connect();
-    const db = client.db("DivineDevelopers");
-    const collection = db.collection("register");
-    return { collection, client };
-  } catch (error) {
-    console.error("Failed to connect to MongoDB:", error);
-    throw new Error("Database connection failed");
+  if (cachedDb) {
+    // Reuse the existing database connection
+    return { collection: cachedDb.collection("register"), client: cachedClient };
   }
+
+  if (!cachedClient) {
+    cachedClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    await cachedClient.connect();
+  }
+
+  const db = cachedClient.db("DivineDevelopers");
+  cachedDb = db;
+
+  return { collection: db.collection("register"), client: cachedClient };
 }
 
 // API route to handle registration
@@ -28,8 +36,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-      // Connect to the MongoDB collection
-      const { collection, client } = await connectToDatabase();
+      // Connect to the MongoDB collection (with connection reuse)
+      const { collection } = await connectToDatabase();
 
       // Check if the email already exists
       const existingUser = await collection.findOne({ email });
@@ -39,9 +47,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       // Insert the data into the collection
       const result = await collection.insertOne({ name, email, password });
-
-      // Close the connection
-      client.close();
 
       // Return success response
       return res.status(201).json({ message: "User registered successfully", result });
