@@ -1,5 +1,4 @@
-// app/register/page.tsx
-"use client"; // Mark this component as a Client Component
+"use client";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -15,7 +14,6 @@ const Register = () => {
   const [success, setSuccess] = useState('');
   const router = useRouter();
 
-  // Handle form change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -23,7 +21,6 @@ const Register = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
@@ -42,7 +39,9 @@ const Register = () => {
 
       if (response.ok) {
         setSuccess('User registered successfully');
-        // Redirect after success
+        setTimeout(() => {
+          router.push('/'); // Redirect to homepage after success
+        }, 2000);
       } else {
         setError(result.error || 'Registration failed');
       }
