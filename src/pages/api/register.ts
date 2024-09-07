@@ -16,7 +16,7 @@ async function connectToDatabase() {
   }
 
   if (!cachedClient) {
-    cachedClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    cachedClient = new MongoClient(uri); // No options needed for modern MongoDB driver
     await cachedClient.connect();
   }
 
