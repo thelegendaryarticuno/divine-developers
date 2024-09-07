@@ -27,7 +27,7 @@ const Register = () => {
     setSuccess('');
 
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      const response = await fetch('https://node-w6f2.onrender.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
