@@ -4,13 +4,13 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { FaBars, FaSun, FaMoon } from "react-icons/fa";
 import Link from "next/link";
-import { useAuth } from "../context/AuthContext"; // Import AuthContext
+import { useAuth } from "../context/AuthContext";
 
 const SimpleNavbar = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { state, dispatch } = useAuth(); // Get the user and dispatch from context
+  const { state, dispatch } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -65,7 +65,7 @@ const SimpleNavbar = () => {
           {state.user ? (
             <div className="flex items-center space-x-2">
               <img
-                src={state.user?.avatar || "/default-avatar.png"} // Placeholder avatar
+                src={state.user?.avatar || "/default-avatar.png"}
                 alt="User Avatar"
                 className="w-10 h-10 rounded-full"
               />
