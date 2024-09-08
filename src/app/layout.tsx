@@ -2,6 +2,14 @@ import "../styles/global.css";
 import { ThemeProvider } from "next-themes";
 import SimpleNavbar from "@/components/Header/header";
 import Head from "next/head"; 
+import {
+  ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
+
 
 export const metadata = {
   title: 'Divine Developers | Home',
@@ -15,17 +23,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <ThemeProvider defaultTheme="dark" attribute="class">
-        <Head>
-          <meta httpEquiv="Content-Language" content="en" />
-          <meta name="description" content="" />
-          <title>Divine Developers | Home</title>
-        </Head>
-        <body>
-          <SimpleNavbar />
-          {children}
-        </body>
-      </ThemeProvider>
+      <ClerkProvider>
+        <ThemeProvider defaultTheme="dark" attribute="class">
+          <Head>
+            <meta httpEquiv="Content-Language" content="en" />
+            <meta name="description" content="" />
+            <title>Divine Developers | Home</title>
+          </Head>
+          <body>
+             <SimpleNavbar/>
+            {children}
+          </body>
+        </ThemeProvider>
+      </ClerkProvider>
     </html>
   );
 }
