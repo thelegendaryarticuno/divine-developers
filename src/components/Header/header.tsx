@@ -4,15 +4,39 @@ import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { FaBars, FaSun, FaMoon } from "react-icons/fa";
 import Link from "next/link";
+import { useAuth } from "../context/AuthContext"; // Import AuthContext
 
 const SimpleNavbar = () => {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { state, dispatch } = useAuth(); // Get the user and dispatch from context
 
   useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      fetch('/me', {
+        headers: { Authorization: token }
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.user) {
+            dispatch({ type: "LOGIN", payload: data.user });
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+
     setMounted(true);
-  }, []);
+  }, [dispatch]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    dispatch({ type: "LOGOUT" });
+  };
 
   if (!mounted) return null;
 
@@ -38,11 +62,28 @@ const SimpleNavbar = () => {
         </div>
 
         <div className="flex items-center space-x-4">
-          <Link href="/Register">
-            <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">
-              Register Here
-            </button>
-          </Link>
+          {state.user ? (
+            <div className="flex items-center space-x-2">
+              <img
+                src={state.user?.avatar || "/default-avatar.png"} // Placeholder avatar
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full"
+              />
+              <span className={`text-${theme === "dark" ? "white" : "black"}`}>{state.user.name}</span>
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-all"
+              >
+                Logout
+              </button>
+            </div>
+          ) : (
+            <Link href="/Register">
+              <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-all">
+                Register Here
+              </button>
+            </Link>
+          )}
 
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
@@ -67,9 +108,6 @@ const SimpleNavbar = () => {
           </Link>
           <Link href="/services">
             <span className={`block text-${theme === "dark" ? "white" : "black"}`}>Services</span>
-          </Link>
-          <Link href="/register">
-            <span className={`block text-${theme === "dark" ? "white" : "black"}`}>Register Here</span>
           </Link>
         </div>
       )}

@@ -40,7 +40,7 @@ const Register = () => {
       if (response.ok) {
         setSuccess('User registered successfully');
         setTimeout(() => {
-          router.push('/'); // Redirect to homepage after success
+          router.push('/dashboard'); // Redirect to homepage after success
         }, 2000);
       } else {
         setError(result.error || 'Registration failed');
