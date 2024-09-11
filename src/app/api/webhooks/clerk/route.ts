@@ -54,29 +54,28 @@ export async function POST(req: Request) {
   const { id } = evt.data
   const eventType = evt.type
 
-  if(eventType==="user.created"){
-    const {id , email_addresses}=
-    evt.data;
-
-    const user={
-        clerkId:id,
-        email:email_addresses
+  if (eventType === "user.created") {
+    const { id, email_addresses } = evt.data;
+    const email = email_addresses[0]?.email_address;  // Extract the first email address
+  
+    const user = {
+      clerkId: id,
+      email: email,
     };
-    console.log(user);
-    const newUser=await createUser(user);
-
-    if(newUser){
-        await clerkClient.users.updateUserMetadata(id , {
-            publicMetadata:{
-                userId:newUser.id,
-
-                
-            }
-        });
+  
+    console.log(user);  // Debug: Ensure user object has correct values
+  
+    const newUser = await createUser(user);
+    if (newUser) {
+      await clerkClient.users.updateUserMetadata(id, {
+        publicMetadata: {
+          userId: newUser.id,
+        },
+      });
     }
-    return NextResponse.json({message:"New user created", user :newUser})
+    return NextResponse.json({ message: "New user created", user: newUser });
   }
-  console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
+    console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
   console.log('Webhook body:', body)
 
   return new Response('', { status: 200 })
