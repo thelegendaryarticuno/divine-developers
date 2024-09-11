@@ -32,7 +32,7 @@ const SimpleNavbar = () => {
       <nav className="flex items-center justify-between">
         <div className="flex items-center space-x-6">
           <Link href="/" className={`text-lg font-bold ${theme === "dark" ? "text-white" : "text-black"}`}>
-            Logo
+            LOGO
           </Link>
 
           <div className="hidden lg:flex space-x-6">
