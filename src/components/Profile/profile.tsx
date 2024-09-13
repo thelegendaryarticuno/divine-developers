@@ -25,7 +25,7 @@ const Profile = () => {
           {user?.firstName} {user?.lastName}
         </h2>
         <p className="text-gray-500">New York, USA</p>
-        <p className="text-gray-500">sara.tancredi@example.com</p>
+        <p className="text-gray-500">not yet!</p>
       </div>
     </div>
   );
