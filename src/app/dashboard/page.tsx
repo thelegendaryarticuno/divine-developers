@@ -11,7 +11,7 @@ import ChatBot from "@/components/chatbot/chatbot";
 const Profile = () => {
   const { theme } = useTheme();
   const { user } = useUser();
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
+  const [date, setDate] = React.useState<Date>(new Date()); // Remove undefined from the type
   const [sidebarOpen, setSidebarOpen] = React.useState(false); // Sidebar closed by default
 
   // Handle screen resizing to toggle sidebar for smaller screens
@@ -84,7 +84,7 @@ const Profile = () => {
 
       {/* Main Content */}
       <div
-        className={`flex-1 p-6 transition-all duration-300`}
+        className="flex-1 p-6 transition-all duration-300"
         style={{
           marginLeft: sidebarOpen ? "16rem" : "5rem",
           height: "100vh",
@@ -92,7 +92,7 @@ const Profile = () => {
         }}
       >
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 h-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 h-full">
           {/* Left column: Profile and Document Upload */}
           <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col justify-between">
             {/* Profile Component */}
@@ -115,15 +115,15 @@ const Profile = () => {
                 <p className="text-gray-500">Not yet!</p>
               </div>
             </div>
-
-            {/* Document Upload Component */}
             <DocumentUpload />
           </div>
-
-          {/* Right column: Calendar and Chat Bot */}
-          <div className="col-span-1 md:col-span-2 lg:col-span-2 flex flex-col justify-between">
-            <CalendarComponent date={date} setDate={setDate} />
-            <ChatBot />
+          <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col justify-center">
+            <div className="">
+              <CalendarComponent/>
+            </div>
+            <div className="mt-2 flex-1 w-[100%] h-[50%]">
+              <ChatBot />
+            </div>
           </div>
         </div>
       </div>

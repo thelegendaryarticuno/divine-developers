@@ -26,7 +26,7 @@ const Hero = () => {
       }}
     >
       <div className="flex flex-col items-center justify-center h-full bg-black bg-opacity-40">
-        <h1 className="text-white text-4xl font-bold">Welcome to Our Website</h1>
+        <h1 className="text-white text-4xl text-center font-bold">Welcome to Our Website</h1>
         <p className="text-white text-lg mt-4">We offer the best services for you!</p>
         <button className="mt-6 px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-all">
           Learn More

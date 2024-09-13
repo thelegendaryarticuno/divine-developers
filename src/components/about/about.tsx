@@ -5,14 +5,14 @@ import Image from "next/image";
 
 const AboutSection = () => {
   return (
-    <section className="flex flex-col items-center justify-between p-6 bg-gray-100 dark:bg-gray-900">
+    <section className="flex flex-col items-center justify-center p-6 bg-gray-100 dark:bg-gray-900">
       {/* Heading */}
       <h2 className="text-3xl font-bold text-center my-4">
         Let&apos;s know PMSSS
       </h2>
 
       {/* Content: Image and Description */}
-      <div className="flex flex-col lg:flex-row items-center justify-between w-full">
+      <div className="flex flex-col lg:flex-row items-center justify-center w-full max-w-6xl mx-auto">
         {/* Left: Image */}
         <div className="lg:w-1/2 w-full p-4">
           <Image
@@ -20,7 +20,7 @@ const AboutSection = () => {
             alt="About PMSSS"
             width={500}
             height={300}
-            className="object-cover"
+            className="object-cover w-full h-auto rounded-lg shadow-md"
           />
         </div>
 
