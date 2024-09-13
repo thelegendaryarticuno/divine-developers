@@ -145,8 +145,7 @@ const Profile = () => {
               </div>
             </div>
 
-            {/* Conditional Rendering */}
-            {activePage === "upload" && <DocumentUpload />}
+            <DocumentUpload />
           </div>
           <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col justify-center">
             <div className="">
