@@ -64,6 +64,15 @@ const SimpleNavbar = () => {
               >
                 Services
               </Link>
+
+              {userId && (
+                <Link
+                  href="/dashboard"
+                  className={`text-${theme === "dark" ? "white" : "black"}`}
+                >
+                  Dashboard
+                </Link>
+              )}
             </div>
           </div>
 
@@ -85,16 +94,6 @@ const SimpleNavbar = () => {
               </>
             ) : (
               <>
-                {pathname === "/dashboard" ? (
-                  <Link
-                    href="/dashboard"
-                    className="text-black hover:text-gray-700"
-                  >
-                    Dashboard
-                  </Link>
-                ) : // Remove "My Data" link entirely or use this condition to decide when to show
-                null}
-
                 <div className="flex items-center space-x-2">
                   <span
                     className={`text-${theme === "dark" ? "white" : "black"}`}
@@ -148,14 +147,26 @@ const SimpleNavbar = () => {
             >
               Services
             </Link>
-            <Link
-              href="/sign-in"
-              className={`block text-${
-                theme === "dark" ? "white" : "black"
-              } p-2`}
-            >
-              Sign In
-            </Link>
+
+            {userId && (
+              <Link
+                href="/dashboard"
+                className={`block text-${theme === "dark" ? "white" : "black"}`}
+              >
+                Dashboard
+              </Link>
+            )}
+
+            {!userId && (
+              <Link
+                href="/sign-in"
+                className={`block text-${
+                  theme === "dark" ? "white" : "black"
+                } p-2`}
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         )}
       </header>
