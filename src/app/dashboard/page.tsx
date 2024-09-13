@@ -1,47 +1,45 @@
-"use client"
+"use client";
 
+import { UserButton, useUser } from "@clerk/nextjs";
 import React, { useEffect } from "react";
-import { FaHome, FaUpload, FaUserCheck, FaQuestionCircle, FaCog } from "react-icons/fa";
 import { useTheme } from "next-themes";
-import Profile from "@/components/profile/profile";
+import { FaHome, FaUpload, FaUserCheck, FaQuestionCircle, FaCog } from "react-icons/fa";
 import DocumentUpload from "@/components/documentupload/documentupload";
 import CalendarComponent from "@/components/calendar/calendar";
 import ChatBot from "@/components/chatbot/chatbot";
 
-const Dashboard = () => {
+const Profile = () => {
+  const { theme } = useTheme();
+  const { user } = useUser();
   const [date, setDate] = React.useState<Date | undefined>(new Date());
   const [sidebarOpen, setSidebarOpen] = React.useState(false); // Sidebar closed by default
-  const { theme } = useTheme();
 
-  // Use useEffect to handle screen resize and block menu on smaller screens
+  // Handle screen resizing to toggle sidebar for smaller screens
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 1024) {
-        setSidebarOpen(false); // Ensure sidebar is closed by default on md and sm
+        setSidebarOpen(false); // Ensure sidebar is closed by default on smaller screens
       }
     };
 
-    handleResize(); // Run on mount to ensure the correct initial state
-
-    window.addEventListener("resize", handleResize); // Update on window resize
-    return () => window.removeEventListener("resize", handleResize); // Cleanup on unmount
+    handleResize(); // Initial check on mount
+    window.addEventListener("resize", handleResize); // Listen to window resize
+    return () => window.removeEventListener("resize", handleResize); // Cleanup listener on unmount
   }, []);
 
+  // Toggle sidebar for larger screens
   const toggleSidebar = () => {
     if (window.innerWidth >= 1024) {
-      setSidebarOpen(!sidebarOpen); // Only allow toggling on lg or larger
+      setSidebarOpen(!sidebarOpen); // Toggle only for lg screens or larger
     }
   };
 
   return (
-    <div
-      className={`min-h-screen flex flex-col md:flex-row ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-300 text-black"}`}
-    >
+    <div className={`min-h-screen flex flex-col md:flex-row ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-300 text-black"}`}>
       {/* Sidebar */}
       <div
         className={`fixed top-15 left-0 h-full transition-all duration-300 ${sidebarOpen ? "w-64" : "w-20"} ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"} p-6 flex flex-col z-10`}
       >
-        {/* Hide button for screen sizes smaller than lg */}
         <button className="mb-6 hidden lg:block" onClick={toggleSidebar}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +57,7 @@ const Dashboard = () => {
           </svg>
         </button>
 
-        {/* Sidebar Content */}
+        {/* Sidebar Links */}
         <div className="space-y-16">
           <a href="#" className="flex items-center space-x-4 text-xl">
             <FaHome color={theme === "dark" ? "white" : "black"} />
@@ -84,20 +82,41 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main Content */}
       <div
         className={`flex-1 p-6 transition-all duration-300`}
         style={{
-          marginLeft: sidebarOpen ? '16rem' : '5rem',
-          height: '100vh',
-          overflowY: 'auto',
+          marginLeft: sidebarOpen ? "16rem" : "5rem",
+          height: "100vh",
+          overflowY: "auto",
         }}
       >
         {/* Two-column layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 h-full">
           {/* Left column: Profile and Document Upload */}
           <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col justify-between">
-            <Profile />
+            {/* Profile Component */}
+            <div
+              className="p-4 rounded-lg mb-4 flex items-center space-x-4"
+              style={{
+                backgroundColor: theme === "dark" ? "#1e293b" : "#f9fafb",
+                color: theme === "dark" ? "white" : "black",
+                width: "100%",
+              }}
+            >
+              <div className="w-24 h-24 rounded-full overflow-hidden flex items-center justify-center">
+                <UserButton />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold">
+                  {user?.firstName} {user?.lastName}
+                </h2>
+                <p className="text-gray-500">New York, USA</p>
+                <p className="text-gray-500">Not yet!</p>
+              </div>
+            </div>
+
+            {/* Document Upload Component */}
             <DocumentUpload />
           </div>
 
@@ -112,4 +131,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Profile;
