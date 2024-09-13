@@ -13,6 +13,7 @@ const Profile = () => {
   const { user } = useUser();
   const [date, setDate] = React.useState<Date>(new Date()); // Remove undefined from the type
   const [sidebarOpen, setSidebarOpen] = React.useState(false); // Sidebar closed by default
+  const [activePage, setActivePage] = React.useState<string>("home"); // Default active page
 
   // Handle screen resizing to toggle sidebar for smaller screens
   useEffect(() => {
@@ -31,6 +32,14 @@ const Profile = () => {
   const toggleSidebar = () => {
     if (window.innerWidth >= 1024) {
       setSidebarOpen(!sidebarOpen); // Toggle only for lg screens or larger
+    }
+  };
+
+  // Handle sidebar item click
+  const handleSidebarClick = (page: string) => {
+    setActivePage(page);
+    if (window.innerWidth < 1024) {
+      setSidebarOpen(false); // Close sidebar on smaller screens after selection
     }
   };
 
@@ -59,23 +68,43 @@ const Profile = () => {
 
         {/* Sidebar Links */}
         <div className="space-y-16">
-          <a href="#" className="flex items-center space-x-4 text-xl">
+          <a
+            href="#"
+            className="flex items-center space-x-4 text-xl"
+            onClick={() => handleSidebarClick("home")}
+          >
             <FaHome color={theme === "dark" ? "white" : "black"} />
             {sidebarOpen && <span>Home</span>}
           </a>
-          <a href="#" className="flex items-center space-x-4 text-xl">
+          <a
+            href="/dashboard/document"
+            className="flex items-center space-x-4 text-xl"
+            onClick={() => handleSidebarClick("upload")}
+          >
             <FaUpload color={theme === "dark" ? "white" : "black"} />
             {sidebarOpen && <span>Doc Upload</span>}
           </a>
-          <a href="#" className="flex items-center space-x-4 text-xl">
+          <a
+            href="#"
+            className="flex items-center space-x-4 text-xl"
+            onClick={() => handleSidebarClick("verification")}
+          >
             <FaUserCheck color={theme === "dark" ? "white" : "black"} />
             {sidebarOpen && <span>Verification</span>}
           </a>
-          <a href="#" className="flex items-center space-x-4 text-xl">
+          <a
+            href="#"
+            className="flex items-center space-x-4 text-xl"
+            onClick={() => handleSidebarClick("assistance")}
+          >
             <FaQuestionCircle color={theme === "dark" ? "white" : "black"} />
             {sidebarOpen && <span>Assistance</span>}
           </a>
-          <a href="#" className="flex items-center space-x-4 text-xl">
+          <a
+            href="#"
+            className="flex items-center space-x-4 text-xl"
+            onClick={() => handleSidebarClick("settings")}
+          >
             <FaCog color={theme === "dark" ? "white" : "black"} />
             {sidebarOpen && <span>Settings</span>}
           </a>
@@ -115,7 +144,9 @@ const Profile = () => {
                 <p className="text-gray-500">Not yet!</p>
               </div>
             </div>
-            <DocumentUpload />
+
+            {/* Conditional Rendering */}
+            {activePage === "upload" && <DocumentUpload />}
           </div>
           <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col justify-center">
             <div className="">
