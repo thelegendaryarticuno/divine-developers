@@ -62,13 +62,12 @@ const SimpleNavbar = () => {
             ) : (
               <>
                 {pathname === '/dashboard' ? (
-                  <Link href="/my-data" className="text-black hover:text-gray-700">
-                    My Data
-                  </Link>
-                ) : (
                   <Link href="/dashboard" className="text-black hover:text-gray-700">
                     Dashboard
                   </Link>
+                ) : (
+                  // Remove "My Data" link entirely or use this condition to decide when to show
+                  null
                 )}
 
                 <div className="flex items-center space-x-2">

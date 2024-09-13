@@ -16,7 +16,8 @@ const FaqSection = () => {
     <section className="w-full my-4 p-6 bg-gray-100 dark:bg-gray-900">
       <h2 className="text-3xl font-bold text-center mb-8">FAQs</h2>
 
-      <div className="space-y-4">
+      {/* Grid container with responsive classes */}
+      <div className="grid gap-4 lg:grid-cols-2 md:grid-cols-1">
         {faqData.map((faq, index) => (
           <div
             key={index}
@@ -50,7 +51,7 @@ const faqData = [
   {
     question: "What is PMSSS?",
     answer:
-      "PMSSS stands for Prime Minister’s Special Scholarship Scheme, which provides financial support to students from Jammu and Kashmir for pursuing higher education in institutions across India.",
+      "PMSSS stands for Prime Ministers Special Scholarship Scheme, which provides financial support to students from Jammu and Kashmir for pursuing higher education in institutions across India.",
   },
   {
     question: "Who is eligible for PMSSS?",
