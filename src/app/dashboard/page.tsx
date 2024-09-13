@@ -3,10 +3,10 @@
 import React, { useEffect } from "react";
 import { FaHome, FaUpload, FaUserCheck, FaQuestionCircle, FaCog } from "react-icons/fa";
 import { useTheme } from "next-themes";
-import Profile from "../../components/profile/profile";
-import DocumentUpload from "../../components/documentupload/documentupload";
-import CalendarComponent from "../../components/calendar/calendar";
-import ChatBot from "../../components/chatbot/chatbot";
+import Profile from "@/components/profile/profile";
+import DocumentUpload from "@/components/documentupload/documentupload";
+import CalendarComponent from "@/components/calendar/calendar";
+import ChatBot from "@/components/chatbot/chatbot";
 
 const Dashboard = () => {
   const [date, setDate] = React.useState<Date | undefined>(new Date());
