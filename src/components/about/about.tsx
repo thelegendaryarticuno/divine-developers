@@ -8,7 +8,7 @@ const AboutSection = () => {
     <section className="flex flex-col items-center justify-between p-6 bg-gray-100 dark:bg-gray-900">
       {/* Heading */}
       <h2 className="text-3xl font-bold text-center my-4">
-        Let's know PMSSS
+        Let&apos;s know PMSSS
       </h2>
 
       {/* Content: Image and Description */}
@@ -27,7 +27,7 @@ const AboutSection = () => {
         {/* Right: Description */}
         <div className="lg:w-1/2 w-full p-4">
           <p className="text-lg leading-relaxed">
-            The Prime Minister’s Special Scholarship Scheme (PMSSS) is a
+            The Prime Minister&apos;s Special Scholarship Scheme (PMSSS) is a
             government initiative aimed at providing financial assistance to
             students from Jammu and Kashmir. This scheme facilitates education
             in prestigious institutions across the country, ensuring that
