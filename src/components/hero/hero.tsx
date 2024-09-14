@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs"; // Import useUser from Clerk
 import RBAC from "../RBAC/rbac";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
@@ -7,6 +8,7 @@ const Hero = () => {
   const images = ["/hero/image1.jpeg", "/hero/image2.jpg", "/hero/image3.jpg"];
 
   const [currentImage, setCurrentImage] = useState(0);
+  const { isSignedIn } = useUser(); // Clerk hook to check if the user is signed in
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,19 +34,21 @@ const Hero = () => {
             We offer the best services for you!
           </p>
 
-          {/* Dialog with button trigger */}
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="mt-6 px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-all">
-                Go to Dashboard
-              </button>
-            </DialogTrigger>
-            <DialogContent>
-              <div className="mt-8">
-                <RBAC />
-              </div>
-            </DialogContent>
-          </Dialog>
+          {/* Show the button only if the user is signed in */}
+          {isSignedIn && (
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="mt-6 px-6 py-2 bg-blue-500 text-white font-semibold rounded-md hover:bg-blue-600 transition-all">
+                  Go to Dashboard
+                </button>
+              </DialogTrigger>
+              <DialogContent>
+                <div className="mt-8">
+                  <RBAC />
+                </div>
+              </DialogContent>
+            </Dialog>
+          )}
         </div>
       </div>
     </div>
