@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
-import { toast } from "sonner"
-
+import { toast } from "sonner";
 
 const DocumentUpload = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -37,10 +36,17 @@ const DocumentUpload = () => {
         body: data,
       });
 
-      if (!res.ok) throw new Error(await res.text());
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error("Error uploading:", errorText);
+        throw new Error(errorText);
+      }
 
+      const result = await res.json();
+      console.log("Success:", result);
       setMessage("File uploaded successfully!");
     } catch (error) {
+      console.error("Upload failed:", error);
       if (error instanceof Error) {
         setMessage(`Upload failed: ${error.message}`);
       } else {
@@ -70,14 +76,16 @@ const DocumentUpload = () => {
         Upload your docs below:
       </p>
       <form onSubmit={onSubmit} className="flex flex-col space-y-4">
-        <input type="hidden" name="username" value={user?.username || ""} />
+        <input name="username" value={user?.firstName || ""} readOnly hidden />
 
         <input
           type="file"
           name="file"
           onChange={(e) => setFile(e.target.files?.[0] || null)}
           className={`border p-2 rounded-lg transition-colors ${
-            theme === "dark" ? "border-gray-600 bg-gray-700 text-white" : "border-gray-300 bg-white text-black"
+            theme === "dark"
+              ? "border-gray-600 bg-gray-700 text-white"
+              : "border-gray-300 bg-white text-black"
           }`}
           required
         />
