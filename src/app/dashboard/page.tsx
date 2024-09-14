@@ -137,11 +137,11 @@ const Profile = () => {
                 <UserButton />
               </div>
               <div>
-                <h2 className="text-xl font-bold">
+                <h2 className="text-3xl font-bold">
                   {user?.firstName} {user?.lastName}
                 </h2>
-                <p className="text-gray-500">New York, USA</p>
-                <p className="text-gray-500">Not yet!</p>
+                {/* <p className="text-gray-500">New York, USA</p>
+                <p className="text-gray-500">Not yet!</p> */}
               </div>
             </div>
 

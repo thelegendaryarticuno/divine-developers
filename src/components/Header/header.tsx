@@ -1,22 +1,26 @@
 "use client";
 
 import { UserButton, useAuth, useUser } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { FaBars, FaSun, FaMoon } from "react-icons/fa";
 import Link from "next/link";
 
 const SimpleNavbar = () => {
-  useEffect(() => {
-    console.log("SimpleNavbar rendered");
-  }, []);
-
   const { userId, isLoaded } = useAuth();
   const { user } = useUser();
   const pathname = usePathname();
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  useEffect(() => {
+    console.log("SimpleNavbar rendered");
+  }, []);
+
+  const handleLinkClick = () => {
+    setIsMenuOpen(false); // Close the menu when a link is clicked
+  };
 
   if (!isLoaded) {
     return (
@@ -64,15 +68,6 @@ const SimpleNavbar = () => {
               >
                 Services
               </Link>
-
-              {userId && (
-                <Link
-                  href="/dashboard"
-                  className={`text-${theme === "dark" ? "white" : "black"}`}
-                >
-                  Dashboard
-                </Link>
-              )}
             </div>
           </div>
 
@@ -93,18 +88,16 @@ const SimpleNavbar = () => {
                 </Link>
               </>
             ) : (
-              <>
-                <div className="flex items-center space-x-2">
-                  <span
-                    className={`text-${theme === "dark" ? "white" : "black"}`}
-                  >
-                    {user?.firstName} {user?.lastName}
-                  </span>
-                  <div>
-                    <UserButton afterSignOutUrl="/" />
-                  </div>
+              <div className="flex items-center space-x-2">
+                <span
+                  className={`text-${theme === "dark" ? "white" : "black"}`}
+                >
+                  {user?.firstName} {user?.lastName}
+                </span>
+                <div>
+                  <UserButton afterSignOutUrl="/" />
                 </div>
-              </>
+              </div>
             )}
 
             <button
@@ -128,41 +121,50 @@ const SimpleNavbar = () => {
         </nav>
 
         {isMenuOpen && (
-          <div className="lg:hidden mt-2 space-y-2">
+          <div className="lg:hidden mt-2 space-y-2 px-4">
             <Link
               href="/"
-              className={`block text-${theme === "dark" ? "white" : "black"}`}
+              className={`block text-${
+                theme === "dark" ? "white" : "black"
+              } py-2 border-b ${
+                theme === "dark" ? "border-gray-700" : "border-gray-300"
+              }`}
+              onClick={handleLinkClick}
             >
               Home
             </Link>
             <Link
               href="/about"
-              className={`block text-${theme === "dark" ? "white" : "black"}`}
+              className={`block text-${
+                theme === "dark" ? "white" : "black"
+              } py-2 border-b ${
+                theme === "dark" ? "border-gray-700" : "border-gray-300"
+              }`}
+              onClick={handleLinkClick}
             >
               About
             </Link>
             <Link
               href="/services"
-              className={`block text-${theme === "dark" ? "white" : "black"}`}
+              className={`block text-${
+                theme === "dark" ? "white" : "black"
+              } py-2 border-b ${
+                theme === "dark" ? "border-gray-700" : "border-gray-300"
+              }`}
+              onClick={handleLinkClick}
             >
               Services
             </Link>
-
-            {userId && (
-              <Link
-                href="/dashboard"
-                className={`block text-${theme === "dark" ? "white" : "black"}`}
-              >
-                Dashboard
-              </Link>
-            )}
 
             {!userId && (
               <Link
                 href="/sign-in"
                 className={`block text-${
                   theme === "dark" ? "white" : "black"
-                } p-2`}
+                } py-2 border-b ${
+                  theme === "dark" ? "border-gray-700" : "border-gray-300"
+                }`}
+                onClick={handleLinkClick}
               >
                 Sign In
               </Link>
@@ -172,7 +174,9 @@ const SimpleNavbar = () => {
       </header>
 
       {/* Add padding to the content below the navbar */}
-      <div className="pt-16">{/* Content below the navbar goes here */}</div>
+      <div className="pt-16">
+        {/* Content below navbar */}
+      </div>
     </>
   );
 };
