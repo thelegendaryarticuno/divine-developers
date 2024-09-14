@@ -76,7 +76,7 @@ const DocumentUpload = () => {
         Upload your docs below:
       </p>
       <form onSubmit={onSubmit} className="flex flex-col space-y-4">
-        <input name="username" value={user?.firstName || ""} readOnly hidden />
+        <input name="username" value={user?.firstName || ""} readOnly  />
 
         <input
           type="file"
