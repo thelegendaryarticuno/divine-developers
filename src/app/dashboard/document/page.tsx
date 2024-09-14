@@ -3,9 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
 
-const DocumentUpload = () => {
+const DocumentUpload: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const { user } = useUser(); // Get the user object from Clerk
@@ -76,7 +75,16 @@ const DocumentUpload = () => {
         Upload your docs below:
       </p>
       <form onSubmit={onSubmit} className="flex flex-col space-y-4">
-        <input name="username" value={user?.firstName || ""} readOnly  />
+        <input
+          name="username"
+          value={user?.username || ""}
+          readOnly
+          className={`border p-2 rounded-lg transition-colors ${
+            theme === "dark"
+              ? "border-gray-600 bg-gray-700 text-white"
+              : "border-gray-300 bg-white text-black"
+          }`}
+        />
 
         <input
           type="file"
