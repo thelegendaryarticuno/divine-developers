@@ -5,7 +5,7 @@ import { useEdgeStore } from "@/lib/edgestore";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
-import { useToast } from "@/hooks/use-toast"; // Import useToast
+import { useToast } from "@/hooks/use-toast";
 
 // Define the initial fields to be uploaded
 const uploadFields = [
@@ -18,11 +18,11 @@ const uploadFields = [
 
 export default function Page() {
   const { theme } = useTheme();
-  const { toast } = useToast(); // Destructure toast from useToast
   const [files, setFiles] = useState<Record<string, File | undefined>>({});
   const [progress, setProgress] = useState<Record<string, number>>({});
   const [urls, setUrls] = useState<Record<string, { url: string; thumbnailUrl: string | null }>>({});
   const { edgestore } = useEdgeStore();
+  const { toast } = useToast();
 
   // State for checkboxes
   const [isDisabled, setIsDisabled] = useState(false);
@@ -48,14 +48,14 @@ export default function Page() {
     }
   }, [uploadHistory]);
 
-  const handleFileChange = (name: string, file: File) => {
+  const handleFileChange = (name: string, file: File | undefined) => {
     setFiles((prevFiles) => ({ ...prevFiles, [name]: file }));
   };
 
   const handleUpload = async (name: string) => {
     const file = files[name];
-    
-    // Check if file exists before proceeding
+
+    // Ensure file is defined before proceeding
     if (!file) {
       console.error(`No file selected for ${name}`);
       return; // Exit if no file is selected
@@ -89,9 +89,9 @@ export default function Page() {
 
       setUploadHistory((prevHistory) => [...prevHistory, newHistoryItem]);
 
-      // Show success toast after upload
+      // Trigger toast notification
       toast({
-        description: `File ${name} uploaded successfully.`,
+        description: `${name} uploaded successfully.`,
       });
     } catch (error) {
       console.error(`Error uploading ${name}:`, error);
@@ -107,8 +107,8 @@ export default function Page() {
             <SingleImageDropzone
               width={200}
               height={200}
-              value={files[field.name]}
-              dropzoneOptions={{ maxSize: 1024 * 1024 * 1 }} // 1MB limit
+              value={files[field.name] || undefined}  // Ensure file is passed or null
+              dropzoneOptions={{ maxSize: 1024 * 1024 * 1 }} 
               onChange={(file) => handleFileChange(field.name, file)}
             />
             <div className="h-[6px] w-44 border rounded overflow-hidden">
@@ -134,8 +134,113 @@ export default function Page() {
         ))}
       </div>
 
-      {/* Additional sections for Disability and Diploma fields here */}
-      {/* Upload history section remains unchanged */}
+      {/* Checkbox for disability */}
+      <div className="flex gap-2 items-center my-4">
+        <input
+          type="checkbox"
+          checked={isDisabled}
+          onChange={() => setIsDisabled((prev) => !prev)}
+        />
+        <label>Are you disabled?</label>
+      </div>
+
+      {isDisabled && (
+        <div className="flex flex-col items-center gap-2">
+          <h3>Disability Certificate</h3>
+          <SingleImageDropzone
+            width={200}
+            height={200}
+            value={files["disabilityCertificate"]}
+            dropzoneOptions={{ maxSize: 1024 * 1024 * 1 }}
+            onChange={(file) => handleFileChange("disabilityCertificate", file)}
+          />
+          <div className="h-[6px] w-44 border rounded overflow-hidden">
+            <div
+              className="h-full bg-white transition-all duration-150"
+              style={{ width: `${progress["disabilityCertificate"] || 0}%` }}
+            />
+          </div>
+          <button
+            className={`px-4 py-2 rounded-lg transition-all hover:opacity-80 ${
+              theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
+            }`}
+            onClick={() => handleUpload("disabilityCertificate")}
+          >
+            Upload
+          </button>
+          {urls["disabilityCertificate"]?.url && (
+            <Link href={urls["disabilityCertificate"]?.url} target="_blank">
+              <p className="text-blue-500 underline">SHOW UPLOADED DOC</p>
+            </Link>
+          )}
+        </div>
+      )}
+
+      {/* Checkbox for diploma */}
+      <div className="flex gap-2 items-center my-4">
+        <input
+          type="checkbox"
+          checked={hasDiploma}
+          onChange={() => setHasDiploma((prev) => !prev)}
+        />
+        <label>Have you done a diploma?</label>
+      </div>
+
+      {hasDiploma && (
+        <div className="flex flex-col items-center gap-2">
+          <h3>Polytechnic Diploma Certificate</h3>
+          <SingleImageDropzone
+            width={200}
+            height={200}
+            value={files["diplomaCertificate"]}
+            dropzoneOptions={{ maxSize: 1024 * 1024 * 1 }}
+            onChange={(file) => handleFileChange("diplomaCertificate", file)}
+          />
+          <div className="h-[6px] w-44 border rounded overflow-hidden">
+            <div
+              className="h-full bg-white transition-all duration-150"
+              style={{ width: `${progress["diplomaCertificate"] || 0}%` }}
+            />
+          </div>
+          <button
+            className={`px-4 py-2 rounded-lg transition-all hover:opacity-80 ${
+              theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
+            }`}
+            onClick={() => handleUpload("diplomaCertificate")}
+          >
+            Upload
+          </button>
+          {urls["diplomaCertificate"]?.url && (
+            <Link href={urls["diplomaCertificate"]?.url} target="_blank">
+              <p className="text-blue-500 underline">SHOW UPLOADED DOC</p>
+            </Link>
+          )}
+        </div>
+      )}
+
+      {/* Uploaded Document History Section */}
+      <div className="mt-10">
+        <h2 className="text-xl font-semibold">Uploaded Document History</h2>
+        <div className="mt-4 space-y-2">
+          {uploadHistory.length > 0 ? (
+            uploadHistory.map((item, index) => (
+              <div
+                key={index}
+                className="flex justify-between items-center border-b pb-2"
+              >
+                <span>
+                  {item.name} - {item.date} at {item.time}
+                </span>
+                <Link href={item.url} target="_blank">
+                  <span className="text-blue-500 underline">View Document</span>
+                </Link>
+              </div>
+            ))
+          ) : (
+            <p>No uploads yet.</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
