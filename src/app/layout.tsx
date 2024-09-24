@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import SimpleNavbar from "@/components/Header/header";
 import Head from "next/head";
 import { Analytics } from "@vercel/analytics/react";
+import { Toaster } from "@/components/ui/toaster"
 import {
   ClerkProvider,
   SignInButton,
@@ -10,6 +11,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
+import { EdgeStoreProvider } from "@/lib/edgestore";
 
 export const metadata = {
   title: "Divine Developers | Home",
@@ -24,6 +26,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <ClerkProvider>
+        <EdgeStoreProvider>
         <ThemeProvider defaultTheme="dark" attribute="class">
           <Head>
             <meta httpEquiv="Content-Language" content="en" />
@@ -34,8 +37,10 @@ export default function RootLayout({
           <body>
             <SimpleNavbar />
             {children}
+            <Toaster/>
           </body>
         </ThemeProvider>
+        </EdgeStoreProvider>
       </ClerkProvider>
     </html>
   );
