@@ -3,7 +3,8 @@ import { ThemeProvider } from "next-themes";
 import SimpleNavbar from "@/components/Header/header";
 import Head from "next/head";
 import { Analytics } from "@vercel/analytics/react";
-import { Toaster } from "@/components/ui/toaster"
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Toaster } from "@/components/ui/toaster";
 import {
   ClerkProvider,
   SignInButton,
@@ -27,19 +28,20 @@ export default function RootLayout({
     <html lang="en">
       <ClerkProvider>
         <EdgeStoreProvider>
-        <ThemeProvider defaultTheme="dark" attribute="class">
-          <Head>
-            <meta httpEquiv="Content-Language" content="en" />
-            <meta name="description" content="" />
-            <title>Divine Developers | Home</title>
-          </Head>
-          <Analytics />
-          <body>
-            <SimpleNavbar />
-            {children}
-            <Toaster/>
-          </body>
-        </ThemeProvider>
+          <ThemeProvider defaultTheme="dark" attribute="class">
+            <Head>
+              <meta httpEquiv="Content-Language" content="en" />
+              <meta name="description" content="" />
+              <title>Divine Developers | Home</title>
+            </Head>
+            <Analytics />
+            <SpeedInsights />
+            <body>
+              <SimpleNavbar />
+              {children}
+              <Toaster />
+            </body>
+          </ThemeProvider>
         </EdgeStoreProvider>
       </ClerkProvider>
     </html>
