@@ -24,7 +24,7 @@ const RBAC: React.FC = () => {
   const handleSubmit = () => {
     if (id.length === 8) {
       if (role === "SAG Bureau Official") {
-        router.push("/sag-dashboard");
+        router.push("/sagdashboard");
       } else if (role === "Finance Department") {
         router.push("/finance-dashboard");
       }

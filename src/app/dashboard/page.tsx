@@ -3,7 +3,13 @@
 import { UserButton, useUser } from "@clerk/nextjs";
 import React, { useEffect } from "react";
 import { useTheme } from "next-themes";
-import { FaHome, FaUpload, FaUserCheck, FaQuestionCircle, FaCog } from "react-icons/fa";
+import {
+  FaHome,
+  FaUpload,
+  FaUserCheck,
+  FaQuestionCircle,
+  FaCog,
+} from "react-icons/fa";
 import DocumentUpload from "@/components/documentupload/documentupload";
 import CalendarComponent from "@/components/calendar/calendar";
 import ChatBot from "@/components/chatbot/chatbot";
@@ -44,10 +50,18 @@ const Profile = () => {
   };
 
   return (
-    <div className={`min-h-screen flex flex-col md:flex-row ${theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-300 text-black"}`}>
+    <div
+      className={`min-h-screen flex flex-col md:flex-row ${
+        theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-300 text-black"
+      }`}
+    >
       {/* Sidebar */}
       <div
-        className={`fixed top-15 left-0 h-full transition-all duration-300 ${sidebarOpen ? "w-64" : "w-20"} ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"} p-6 flex flex-col z-10`}
+        className={`fixed top-15 left-0 h-full transition-all duration-300 ${
+          sidebarOpen ? "w-64" : "w-20"
+        } ${
+          theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+        } p-6 flex flex-col z-10`}
       >
         <button className="mb-6 hidden lg:block" onClick={toggleSidebar}>
           <svg
@@ -149,7 +163,7 @@ const Profile = () => {
           </div>
           <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col justify-center">
             <div className="">
-              <CalendarComponent/>
+              <CalendarComponent />
             </div>
             <div className="mt-2 flex-1 w-[100%] h-[50%]">
               <ChatBot />

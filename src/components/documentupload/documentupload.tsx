@@ -8,6 +8,10 @@ type Document = {
   name: string;
   status: string;
 };
+type DocumentUploadProps = {
+  onUpload: (url: string) => void;
+};
+
 
 const DocumentUpload = () => {
   const { theme } = useTheme();

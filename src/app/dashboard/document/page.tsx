@@ -20,20 +20,18 @@ export default function Page() {
   const { theme } = useTheme();
   const [files, setFiles] = useState<Record<string, File | undefined>>({});
   const [progress, setProgress] = useState<Record<string, number>>({});
-  const [urls, setUrls] = useState<Record<string, { url: string; thumbnailUrl: string | null }>>({});
+  const [urls, setUrls] = useState<
+    Record<string, { url: string; thumbnailUrl: string | null }>
+  >({});
   const { edgestore } = useEdgeStore();
   const { toast } = useToast();
-
-  // State for checkboxes
   const [isDisabled, setIsDisabled] = useState(false);
   const [hasDiploma, setHasDiploma] = useState(false);
-
-  // Upload history state, persisted in local storage
   const [uploadHistory, setUploadHistory] = useState<
     { name: string; date: string; time: string; url: string }[]
   >([]);
 
-  // Load upload history from localStorage on component mount
+  // Load upload history from localStorage
   useEffect(() => {
     const storedHistory = localStorage.getItem("uploadHistory");
     if (storedHistory) {
@@ -62,10 +60,14 @@ export default function Page() {
     }
 
     try {
+      // Upload file to EdgeStore
       const res = await edgestore.myPublicImages.upload({
         file,
         onProgressChange: (progressValue) => {
-          setProgress((prevProgress) => ({ ...prevProgress, [name]: progressValue }));
+          setProgress((prevProgress) => ({
+            ...prevProgress,
+            [name]: progressValue,
+          }));
         },
       });
 
@@ -89,9 +91,23 @@ export default function Page() {
 
       setUploadHistory((prevHistory) => [...prevHistory, newHistoryItem]);
 
+      // Save file details to MongoDB
+      await fetch("/api/saveFileDetails", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          url: res.url,
+          date,
+          time,
+        }),
+      });
+
       // Trigger toast notification
       toast({
-        description: `${name} uploaded successfully.`,
+        description: `${name} uploaded successfully and saved to MongoDB.`,
       });
     } catch (error) {
       console.error(`Error uploading ${name}:`, error);
@@ -107,8 +123,8 @@ export default function Page() {
             <SingleImageDropzone
               width={200}
               height={200}
-              value={files[field.name] || undefined}  // Ensure file is passed or null
-              dropzoneOptions={{ maxSize: 1024 * 1024 * 1 }} 
+              value={files[field.name] || undefined} // Ensure file is passed or null
+              dropzoneOptions={{ maxSize: 1024 * 1024 * 1 }}
               onChange={(file) => handleFileChange(field.name, file)}
             />
             <div className="h-[6px] w-44 border rounded overflow-hidden">
@@ -119,7 +135,9 @@ export default function Page() {
             </div>
             <button
               className={`px-4 py-2 rounded-lg transition-all hover:opacity-80 ${
-                theme === "dark" ? "bg-gray-800 text-white" : "bg-gray-300 text-black"
+                theme === "dark"
+                  ? "bg-gray-800 text-white"
+                  : "bg-gray-300 text-black"
               }`}
               onClick={() => handleUpload(field.name)}
             >
@@ -162,7 +180,9 @@ export default function Page() {
           </div>
           <button
             className={`px-4 py-2 rounded-lg transition-all hover:opacity-80 ${
-              theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
+              theme === "dark"
+                ? "bg-gray-800 text-white"
+                : "bg-white text-black"
             }`}
             onClick={() => handleUpload("disabilityCertificate")}
           >
@@ -204,7 +224,9 @@ export default function Page() {
           </div>
           <button
             className={`px-4 py-2 rounded-lg transition-all hover:opacity-80 ${
-              theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-black"
+              theme === "dark"
+                ? "bg-gray-800 text-white"
+                : "bg-white text-black"
             }`}
             onClick={() => handleUpload("diplomaCertificate")}
           >
@@ -232,7 +254,7 @@ export default function Page() {
                   {item.name} - {item.date} at {item.time}
                 </span>
                 <Link href={item.url} target="_blank">
-                  <span className="text-blue-500 underline">View Document</span>
+                  <p className="text-blue-500 underline">View</p>
                 </Link>
               </div>
             ))
