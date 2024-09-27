@@ -1,7 +1,7 @@
 "use client";
 
 import { UserButton, useUser } from "@clerk/nextjs";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import {
   FaHome,
@@ -14,12 +14,12 @@ import DocumentUpload from "@/components/documentupload/documentupload";
 import CalendarComponent from "@/components/calendar/calendar";
 import ChatBot from "@/components/chatbot/chatbot";
 
-const Profile = () => {
+const Profile: React.FC = () => {
   const { theme } = useTheme();
   const { user } = useUser();
-  const [date, setDate] = React.useState<Date>(new Date()); // Remove undefined from the type
-  const [sidebarOpen, setSidebarOpen] = React.useState(false); // Sidebar closed by default
-  const [activePage, setActivePage] = React.useState<string>("home"); // Default active page
+  const [date, setDate] = useState<Date>(new Date());
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [activePage, setActivePage] = useState<string>("home");
 
   // Handle screen resizing to toggle sidebar for smaller screens
   useEffect(() => {
@@ -37,7 +37,7 @@ const Profile = () => {
   // Toggle sidebar for larger screens
   const toggleSidebar = () => {
     if (window.innerWidth >= 1024) {
-      setSidebarOpen(!sidebarOpen); // Toggle only for lg screens or larger
+      setSidebarOpen(!sidebarOpen); // Toggle only for large screens or larger
     }
   };
 
@@ -154,8 +154,6 @@ const Profile = () => {
                 <h2 className="text-3xl font-bold">
                   {user?.firstName} {user?.lastName}
                 </h2>
-                {/* <p className="text-gray-500">New York, USA</p>
-                <p className="text-gray-500">Not yet!</p> */}
               </div>
             </div>
 

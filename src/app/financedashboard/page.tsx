@@ -18,7 +18,10 @@ const Profile = () => {
   const { user } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activePage, setActivePage] = useState<string>("home");
-  const [fileDetails, setFileDetails] = useState<any[]>([]);
+  const [approvedFiles, setApprovedFiles] = useState<any[]>([]);
+  const [disbursementOptions, setDisbursementOptions] = useState<string | null>(
+    null
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -32,17 +35,18 @@ const Profile = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Fetch only approved documents from the new API endpoint
   useEffect(() => {
-    const fetchFileDetails = async () => {
+    const fetchApprovedDocs = async () => {
       try {
-        const response = await fetch("/api/fetchfiledetails");
+        const response = await fetch("/api/approvedDocs");
         const data = await response.json();
-        setFileDetails(data);
+        setApprovedFiles(data);
       } catch (error) {
-        console.error("Error fetching file details:", error);
+        console.error("Error fetching approved documents:", error);
       }
     };
-    fetchFileDetails();
+    fetchApprovedDocs();
   }, []);
 
   const toggleSidebar = () => {
@@ -58,49 +62,18 @@ const Profile = () => {
     }
   };
 
-  const handleApprove = async (id: string) => {
-    try {
-      const response = await fetch("/api/sagAuthorize", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status: "approved" }),
-      });
-      if (response.ok) {
-        setFileDetails((prevDetails) =>
-          prevDetails.map((file) =>
-            file._id === id ? { ...file, status: "approved" } : file
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error approving document:", error);
-    }
+  const handleDisbursementClick = (id: string) => {
+    setDisbursementOptions(id);
   };
 
-  const handleReject = async (id: string) => {
-    const reason = prompt("Enter the reason to reject:");
-    if (!reason) return;
+  const handleDisbursementToChildren = (id: string) => {
+    // Call disbursement to children API here
+    console.log("Disbursed to children:", id);
+  };
 
-    try {
-      const response = await fetch("/api/sagAuthorize", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id, status: "rejected", reason }),
-      });
-      if (response.ok) {
-        setFileDetails((prevDetails) =>
-          prevDetails.map((file) =>
-            file._id === id ? { ...file, status: "rejected", reason } : file
-          )
-        );
-      }
-    } catch (error) {
-      console.error("Error rejecting document:", error);
-    }
+  const handleDisbursementToCollege = (id: string) => {
+    // Call disbursement to college API here
+    console.log("Disbursed to college:", id);
   };
 
   return (
@@ -113,9 +86,7 @@ const Profile = () => {
       <div
         className={`fixed top-15 left-0 h-full transition-all duration-300 ${
           sidebarOpen ? "w-64" : "w-20"
-        } ${
-          theme === "dark" ? "bg-gray-800" : "bg-gray-100"
-        } p-6 flex flex-col z-10`}
+        } ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"} p-6 flex flex-col z-10`}
       >
         <button className="mb-6 hidden lg:block" onClick={toggleSidebar}>
           <svg
@@ -187,9 +158,9 @@ const Profile = () => {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Document Upload Section (Left) */}
           <div className="lg:w-2/3 bg-gray-400 dark:bg-gray-700 p-4 rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Documents Uploaded</h2>
+            <h2 className="text-2xl font-bold mb-4">Approved Documents</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {fileDetails.map((file) => (
+              {approvedFiles.map((file) => (
                 <div
                   key={file._id}
                   className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md flex flex-col space-y-2"
@@ -205,27 +176,28 @@ const Profile = () => {
                   >
                     View Document
                   </a>
-                  {file.status === "approved" ? (
-                    <button className="bg-green-500 text-white px-4 py-2 rounded-lg">
-                      Approved
-                    </button>
-                  ) : file.status === "rejected" ? (
-                    <p className="text-red-500">Rejected: {file.reason}</p>
-                  ) : (
-                    <div className="flex space-x-2 mt-4">
+                  {disbursementOptions === file._id ? (
+                    <div className="flex flex-col sm:flex-row sm:space-x-2 mt-4 space-y-2 sm:space-y-0">
                       <button
-                        className="bg-green-500 text-white px-4 py-2 rounded-lg"
-                        onClick={() => handleApprove(file._id)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+                        onClick={() => handleDisbursementToChildren(file._id)}
                       >
-                        Approve
+                        Disbursement to Children
                       </button>
                       <button
-                        className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                        onClick={() => handleReject(file._id)}
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg w-full sm:w-auto"
+                        onClick={() => handleDisbursementToCollege(file._id)}
                       >
-                        Reject
+                        Disbursement to College
                       </button>
                     </div>
+                  ) : (
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded-lg w-full"
+                      onClick={() => handleDisbursementClick(file._id)}
+                    >
+                      Approve Disbursement
+                    </button>
                   )}
                 </div>
               ))}
@@ -237,9 +209,9 @@ const Profile = () => {
             <div className="flex-1">
               <CalendarComponent />
             </div>
-            <div className="flex-1">
+            {/* <div className="flex-1">
               <ChatBot />
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

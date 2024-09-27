@@ -26,7 +26,7 @@ const RBAC: React.FC = () => {
       if (role === "SAG Bureau Official") {
         router.push("/sagdashboard");
       } else if (role === "Finance Department") {
-        router.push("/finance-dashboard");
+        router.push("/financedashboard");
       }
     } else {
       alert("Please enter a valid 8-digit ID number.");
