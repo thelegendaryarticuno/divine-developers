@@ -5,7 +5,7 @@ import RBAC from "../RBAC/rbac";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
 const Hero = () => {
-  const images = ["/hero/image1.jpeg", "/hero/image2.jpg", "/hero/image3.jpg"];
+  const images = ["/hero/image1.webp", "/hero/image2.png", "/hero/image3.webp"];
 
   const [currentImage, setCurrentImage] = useState(0);
   const { isSignedIn } = useUser(); // Clerk hook to check if the user is signed in
