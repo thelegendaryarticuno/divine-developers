@@ -19,7 +19,7 @@ export default async function handler(
       time: file.time,
       url: file.url,
       status: file.status,
-      reason: file.reason || "No comments",
+      reason: file.reason || "No comments", 
     }));
 
     res.status(200).json(formattedFiles);
