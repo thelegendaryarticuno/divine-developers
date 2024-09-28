@@ -1,4 +1,4 @@
-"use client"; 
+"use client";
 
 import { SingleImageDropzone } from "@/components/single-file-upload/single-file-dropzone";
 import { useEdgeStore } from "@/lib/edgestore";
@@ -113,7 +113,7 @@ export default function Page() {
       });
 
       toast({
-        description: `${name} uploaded successfully and saved to MongoDB.`,
+        description: `${name} uploaded successfully`,
       });
     } catch (error) {
       console.error(`Error uploading ${name}:`, error);
