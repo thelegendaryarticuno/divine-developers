@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { UserButton, useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
@@ -17,37 +18,82 @@ import ChatBot from "@/components/chatbot/chatbot";
 const Profile: React.FC = () => {
   const { theme } = useTheme();
   const { user } = useUser();
-  const [date, setDate] = useState<Date>(new Date());
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [activePage, setActivePage] = useState<string>("home");
+  const [onboardingStatus, setOnboardingStatus] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Handle screen resizing to toggle sidebar for smaller screens
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 1024) {
-        setSidebarOpen(false); // Ensure sidebar is closed by default on smaller screens
+    const fetchOnboardingStatus = async () => {
+      try {
+        const response = await fetch(
+          `/api/dashboardDesigner?fullName=${user?.fullName}`
+        );
+        const data = await response.json();
+        if (data.onboardingStatus) {
+          setOnboardingStatus(data.onboardingStatus);
+        }
+      } catch (error) {
+        console.error("Error fetching onboarding status:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    handleResize(); // Initial check on mount
-    window.addEventListener("resize", handleResize); // Listen to window resize
-    return () => window.removeEventListener("resize", handleResize); // Cleanup listener on unmount
-  }, []);
+    if (user?.fullName) {
+      fetchOnboardingStatus();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user?.fullName]);
 
-  // Toggle sidebar for larger screens
   const toggleSidebar = () => {
     if (window.innerWidth >= 1024) {
-      setSidebarOpen(!sidebarOpen); // Toggle only for large screens or larger
+      setSidebarOpen(!sidebarOpen);
     }
   };
 
-  // Handle sidebar item click
   const handleSidebarClick = (page: string) => {
     setActivePage(page);
     if (window.innerWidth < 1024) {
-      setSidebarOpen(false); // Close sidebar on smaller screens after selection
+      setSidebarOpen(false);
     }
   };
+
+  // If still loading, show a loading state
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  // If the user is not found, only show the onboarding button
+  if (!user?.fullName || onboardingStatus === "not_found") {
+    return (
+      <div
+        className={`min-h-screen flex flex-col md:flex-row ${
+          theme === "dark" ? "bg-gray-900 text-white" : "bg-gray-300 text-black"
+        }`}
+      >
+        <div className="flex-1 p-6">
+          <div className="flex justify-center my-4">
+            <Link href="/onboarding">
+              <button
+                className={`px-4 py-2 rounded-lg font-semibold transition duration-300 
+                ${
+                  theme === "dark"
+                    ? "bg-blue-600 text-white"
+                    : "bg-blue-200 text-black"
+                }
+                hover:${theme === "dark" ? "bg-blue-500" : "bg-blue-300"} 
+                shadow-md`}
+              >
+                Start Onboarding
+              </button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -90,38 +136,16 @@ const Profile: React.FC = () => {
             <FaHome color={theme === "dark" ? "white" : "black"} />
             {sidebarOpen && <span>Home</span>}
           </a>
-          <a
-            href="/dashboard/document"
-            className="flex items-center space-x-4 text-xl"
-            onClick={() => handleSidebarClick("upload")}
-          >
-            <FaUpload color={theme === "dark" ? "white" : "black"} />
-            {sidebarOpen && <span>Doc Upload</span>}
-          </a>
-          <a
-            href="#"
-            className="flex items-center space-x-4 text-xl"
-            onClick={() => handleSidebarClick("verification")}
-          >
-            <FaUserCheck color={theme === "dark" ? "white" : "black"} />
-            {sidebarOpen && <span>Verification</span>}
-          </a>
-          <a
-            href="#"
-            className="flex items-center space-x-4 text-xl"
-            onClick={() => handleSidebarClick("assistance")}
-          >
-            <FaQuestionCircle color={theme === "dark" ? "white" : "black"} />
-            {sidebarOpen && <span>Assistance</span>}
-          </a>
-          <a
-            href="#"
-            className="flex items-center space-x-4 text-xl"
-            onClick={() => handleSidebarClick("settings")}
-          >
-            <FaCog color={theme === "dark" ? "white" : "black"} />
-            {sidebarOpen && <span>Settings</span>}
-          </a>
+          {onboardingStatus === "eligible" && (
+            <a
+              href="/dashboard/document"
+              className="flex items-center space-x-4 text-xl"
+              onClick={() => handleSidebarClick("upload")}
+            >
+              <FaUpload color={theme === "dark" ? "white" : "black"} />
+              {sidebarOpen && <span>Doc Upload</span>}
+            </a>
+          )}
         </div>
       </div>
 
@@ -134,11 +158,8 @@ const Profile: React.FC = () => {
           overflowY: "auto",
         }}
       >
-        {/* Two-column layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 h-full">
-          {/* Left column: Profile and Document Upload */}
           <div className="col-span-1 md:col-span-2 lg:col-span-3 flex flex-col justify-between">
-            {/* Profile Component */}
             <div
               className="p-4 rounded-lg mb-4 flex items-center space-x-4"
               style={{
@@ -156,16 +177,16 @@ const Profile: React.FC = () => {
                 </h2>
               </div>
             </div>
-
-            <DocumentUpload />
+            {onboardingStatus === "eligible" && <DocumentUpload />}
+            {onboardingStatus === "ineligible" && (
+              <div className="text-red-600 p-4">
+                You failed to meet the basic criteria!
+              </div>
+            )}
           </div>
           <div className="col-span-2 md:col-span-3 lg:col-span-2 flex flex-col justify-center">
-            <div className="">
-              <CalendarComponent />
-            </div>
-            <div className="mt-2 flex-1 w-[100%] h-[50%]">
-              <ChatBot />
-            </div>
+            <CalendarComponent />
+            <ChatBot />
           </div>
         </div>
       </div>
