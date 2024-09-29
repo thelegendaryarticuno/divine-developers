@@ -16,7 +16,7 @@ const AboutSection = () => {
         {/* Left: Image */}
         <div className="lg:w-1/2 w-full p-4">
           <Image
-            src="/hero/image1.jpeg"
+            src="/hero/image1.webp"
             alt="About PMSSS"
             width={500}
             height={300}
